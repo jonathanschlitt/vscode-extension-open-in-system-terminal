@@ -15,9 +15,33 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const terminalApp = vscode.workspace
-        .getConfiguration('terminal.external')
-        .get<string>('osxExec');
+      let terminalCommand: string = '';
+
+      switch (process.platform) {
+        case 'darwin':
+          const macTerminal = vscode.workspace
+            .getConfiguration('terminal.external')
+            .get<string>('osxExec', 'Terminal.app');
+          terminalCommand = `open -a "${macTerminal}"`;
+          break;
+        case 'win32':
+          const winTerminal = vscode.workspace
+            .getConfiguration('terminal.external')
+            .get<string>('windowsExec', 'cmd.exe');
+          terminalCommand = `start "" "${winTerminal}"`;
+          break;
+        case 'linux':
+          const linuxTerminal = vscode.workspace
+            .getConfiguration('terminal.external')
+            .get<string>('linuxExec', 'xterm');
+          terminalCommand = `${linuxTerminal} -e 'cd "${uri.fsPath}" && exec $SHELL'`;
+          break;
+        default:
+          vscode.window.showErrorMessage(
+            'Unsupported platform: ' + process.platform
+          );
+          return;
+      }
 
       try {
         const stat = await vscode.workspace.fs.stat(uri);
@@ -29,14 +53,14 @@ export function activate(context: vscode.ExtensionContext) {
           .get('showNotification', true);
         if (showNotification) {
           vscode.window.showInformationMessage(
-            `Opening ${pathToOpen} in ${terminalApp}...`
+            `Opening ${pathToOpen} in system terminal...`
           );
         }
 
-        exec(`open -a "${terminalApp}" "${pathToOpen}"`, (error) => {
+        exec(`${terminalCommand} "${pathToOpen}"`, (error) => {
           if (error) {
             vscode.window.showErrorMessage(
-              `Failed to open ${terminalApp}: ${error.message}`
+              `Failed to open terminal: ${error.message}`
             );
           }
         });

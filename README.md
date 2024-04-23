@@ -1,6 +1,6 @@
 # Open in System Terminal
 
-This extension enables opening files or folders in the default external system terminal instead of using the integrated VSCode terminal. It mirrors the functionality of VSCode's 'Open in Integrated Terminal' but utilizes the system's default terminal application. To change the default external terminal app, access VSCode Settings by pressing `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux), navigate to `Features > Terminal`, and modify the 'External: Osx Exec' setting.
+This extension enables opening files or folders in the default external system terminal instead of using the integrated VSCode terminal. It mirrors the functionality of VSCode's `Open in Integrated Terminal` but utilizes the system's default terminal application. To change the default external terminal app, access VSCode Settings by pressing `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux), navigate to `Features > Terminal`, and modify the `Terminal > External` setting based on your operating system.
 
 ## Features
 
