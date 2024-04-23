@@ -1,0 +1,84 @@
+{
+  "name": "open-in-system-terminal",
+  "displayName": "Open in System Terminal",
+  "description": "This extension enables opening files or folders in the default external system terminal instead of using the integrated VSCode terminal. It mirrors the functionality of VSCode's 'Open in Integrated Terminal' but utilizes the system's default terminal application. To change the default external terminal app, access VSCode Settings by pressing `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux), navigate to `Features > Terminal`, and modify the 'External: Osx Exec' setting.",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "publisher": "Jonathan Schlitt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonathanschlitt/vscode-extension-open-in-system-terminal"
+  },
+  "license": "MIT",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "terminal",
+    "system",
+    "external",
+    "open",
+    "shell",
+    "cmd",
+    "warp",
+    "powershell",
+    "bash",
+    "zsh",
+    "fish",
+    "wsl",
+    "linux",
+    "mac",
+    "windows"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.openInSystemTerminal",
+        "title": "Open in System Terminal"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceIsFolder || resourceFilename",
+          "command": "extension.openInSystemTerminal",
+          "group": "navigation@6"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Open in System Terminal Settings",
+      "properties": {
+        "open-in-system-terminal.showNotification": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a notification when opening the System Terminal."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.88.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.3.3",
+    "@vscode/test-cli": "^0.0.8",
+    "@vscode/test-electron": "^2.3.9"
+  }
+}
