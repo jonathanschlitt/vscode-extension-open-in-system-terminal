@@ -7,7 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   let openCommandHandler = vscode.commands.registerCommand(
     openCommand,
-    (uri?: vscode.Uri) => {
+    async (uri?: vscode.Uri) => {
       if (!uri) {
         vscode.window.showWarningMessage(
           'Please use this command from the explorer context menu.'
@@ -18,25 +18,33 @@ export function activate(context: vscode.ExtensionContext) {
       const terminalApp = vscode.workspace
         .getConfiguration('terminal.external')
         .get<string>('osxExec');
-      const isDirectory = uri.scheme === 'file' && uri.fsPath.endsWith('/');
-      const pathToOpen = isDirectory ? uri.fsPath : path.dirname(uri.fsPath);
-      const showNotification = vscode.workspace
-        .getConfiguration('open-in-system-terminal')
-        .get('showNotification', true);
 
-      if (showNotification) {
-        vscode.window.showInformationMessage(
-          `Opening ${pathToOpen} in ${terminalApp}...`
-        );
-      }
+      try {
+        const stat = await vscode.workspace.fs.stat(uri);
+        const isDirectory = stat.type === vscode.FileType.Directory;
+        const pathToOpen = isDirectory ? uri.fsPath : path.dirname(uri.fsPath);
 
-      exec(`open -a "${terminalApp}" "${pathToOpen}"`, (error) => {
-        if (error) {
-          vscode.window.showErrorMessage(
-            `Failed to open ${terminalApp}: ${error.message}`
+        const showNotification = vscode.workspace
+          .getConfiguration('open-in-system-terminal')
+          .get('showNotification', true);
+        if (showNotification) {
+          vscode.window.showInformationMessage(
+            `Opening ${pathToOpen} in ${terminalApp}...`
           );
         }
-      });
+
+        exec(`open -a "${terminalApp}" "${pathToOpen}"`, (error) => {
+          if (error) {
+            vscode.window.showErrorMessage(
+              `Failed to open ${terminalApp}: ${error.message}`
+            );
+          }
+        });
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          'Error determining file type: ' + (error as Error).message
+        );
+      }
     }
   );
 
