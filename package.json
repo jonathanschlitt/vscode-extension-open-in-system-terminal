@@ -6,7 +6,7 @@
   "engines": {
     "vscode": "^1.88.0"
   },
-  "publisher": "Jonathan Schlitt",
+  "publisher": "jonathanschlitt",
   "repository": {
     "type": "git",
     "url": "https://github.com/jonathanschlitt/vscode-extension-open-in-system-terminal"
